@@ -8,7 +8,7 @@
     "magento/framework": "*"
   },
   "type": "magento2-module",
-  "license": "Commercial",
+  "license": "GPL-3.0",
   "authors": [
     {
       "name": "Scommerce Mage",
