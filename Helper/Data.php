@@ -1,62 +1,68 @@
 <?php
 /**
- * Scommerce Core Data Helper
+ * SCommerce Mage Core Data Helper
  *
- * Copyright © 2018 Scommerce Mage. All rights reserved.
+ * Copyright © 2019 SCommerce Mage. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Scommerce\Core\Helper;
+use \Magento\Framework\App\Helper\AbstractHelper;
+use \Magento\Framework\Registry;
+use \Magento\Framework\App\Helper\Context;
+use \Magento\Store\Model\StoreManagerInterface;
 
-class Data extends \Magento\Framework\App\Helper\AbstractHelper
+class Data extends AbstractHelper
 {
     /**
-     * @var \Magento\Framework\Registry
+     * @var Registry
      */
     protected $_registry;
 
     /**
-     * @param \Magento\Framework\App\Helper\Context $context
-     * @param \Magento\Framework\Registry $registry
+     * @var StoreManagerInterface
+     */
+    protected $_storeManager;
+
+    /**
+     * @param Context $context
+     * @param Registry $registry
+     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
-        \Magento\Framework\Registry $registry
+        Context $context,
+        Registry $registry,
+        StoreManagerInterface $storeManager
     ) {
         parent::__construct($context);
         $this->_registry = $registry;
+        $this->_storeManager = $storeManager;
     }
 	
 	/**
      * returns whether license key is valid or not
-     *
+     * @param $licenseKey string
+     * @param $sku string
      * @return bool
      */
-    public function isLicenseValid($licensekey,$sku){$website = $this->getWebsite($_SERVER['HTTP_HOST']);$sku=$this->getSKU($sku);return password_verify($website.'_'.$sku, $licensekey);}
-	
-	/**
-     * returns license key for website and sku
-     *
-     * @return bool
-     */
-	public function generateKey($website,$sku){$website = $this->getWebsite($website);$sku=$this->getSKU($sku);$original_license = password_hash($website.'_'.$sku, PASSWORD_BCRYPT);return $original_license;}
-	
+    public function isLicenseValid($licenseKey,$sku){$url = $this->_storeManager->getStore()->getBaseUrl();$website = $this->getWebsite($url);$sku=$this->getSKU($sku);return password_verify($website.'_'.$sku, $licenseKey);}
+
 	/**
      * returns real sku for license key
-     *
+     * @param $sku string
      * @return string
      */
 	public function getSKU($sku) {if (strpos($sku,'_')!==false) {$sku=strtolower(substr($sku,0,strpos($sku,'_')));} return $sku;}
 	
 	/**
      * returns real sku for license key
-     *
+     * @param $website string
      * @return string
      */
 	public function getWebsite($website) {$website = strtolower($website);$website=str_replace('https:','',str_replace('/','',str_replace('http:','',str_replace('www.', '', $website))));return $website;}
 	
 	/**
      * returns if the give URL is valid or not
-     *
+     * @param $website string
      * @return bool
      */
 	public function isUrlValid($website)
