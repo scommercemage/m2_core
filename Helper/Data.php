@@ -37,14 +37,14 @@ class Data extends AbstractHelper
         $this->_registry = $registry;
         $this->_storeManager = $storeManager;
     }
-	
+
 	/**
      * returns whether license key is valid or not
      * @param $licenseKey string
      * @param $sku string
      * @return bool
      */
-    public function isLicenseValid($licenseKey,$sku){$url = $this->_storeManager->getStore()->getBaseUrl();$website = $this->getWebsite($url);$sku=$this->getSKU($sku);return password_verify($website.'_'.$sku, $licenseKey);}
+    public function isLicenseValid($licenseKey,$sku){$licenseKey = is_string($licenseKey)?$licenseKey:'';$url = $this->_storeManager->getStore()->getBaseUrl();$website = $this->getWebsite($url);$sku=$this->getSKU($sku);return password_verify($website.'_'.$sku, $licenseKey);}
 
 	/**
      * returns real sku for license key
@@ -52,14 +52,14 @@ class Data extends AbstractHelper
      * @return string
      */
 	public function getSKU($sku) {if (strpos($sku,'_')!==false) {$sku=strtolower(substr($sku,0,strpos($sku,'_')));} return $sku;}
-	
+
 	/**
      * returns real sku for license key
      * @param $website string
      * @return string
      */
 	public function getWebsite($website) {$website = strtolower($website);$website=str_replace('https:','',str_replace('/','',str_replace('http:','',str_replace('www.', '', $website))));return $website;}
-	
+
 	/**
      * returns if the give URL is valid or not
      * @param $website string
@@ -74,7 +74,7 @@ class Data extends AbstractHelper
 			$website= $bits[0];
 		}
 		unset($bits);
-		
+
 		$bits = explode('.', $website);
 		$idz=0;
 		while (isset($bits[$idz])){
@@ -93,11 +93,11 @@ class Data extends AbstractHelper
 		unset($bit);
 		unset($bits);
 		unset($website);
-		
+
 		if (strlen($part[1])>3){
 			unset($part[0]);
 		}
-		
+
 		foreach($part AS $bit){
 			$website.=$bit.'.';
 		}
