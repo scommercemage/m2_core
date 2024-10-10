@@ -10,9 +10,11 @@ use \Magento\Framework\App\Helper\AbstractHelper;
 use \Magento\Framework\Registry;
 use \Magento\Framework\App\Helper\Context;
 use \Magento\Store\Model\StoreManagerInterface;
+use Scommerce\Core\Model\Config;
 
 class Data extends AbstractHelper
 {
+    private $checkedLicenses = [];
     /**
      * @var Registry
      */
@@ -24,6 +26,11 @@ class Data extends AbstractHelper
     protected $_storeManager;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @param Context $context
      * @param Registry $registry
      * @param StoreManagerInterface $storeManager
@@ -31,11 +38,13 @@ class Data extends AbstractHelper
     public function __construct(
         Context $context,
         Registry $registry,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        Config $config
     ) {
         parent::__construct($context);
         $this->_registry = $registry;
         $this->_storeManager = $storeManager;
+        $this->config = $config;;
     }
 
 	/**
@@ -44,7 +53,16 @@ class Data extends AbstractHelper
      * @param $sku string
      * @return bool
      */
-    public function isLicenseValid($licenseKey,$sku){$licenseKey = is_string($licenseKey)?$licenseKey:'';$url = $this->_storeManager->getStore()->getBaseUrl();$website = $this->getWebsite($url);$sku=$this->getSKU($sku);return password_verify($website.'_'.$sku, $licenseKey);}
+    public function isLicenseValid($licenseKey,$sku){
+        $websiteId = $this->_storeManager->getStore()->getWebsiteId();
+        if (isset($this->checkedLicenses[$websiteId][$sku])) {
+            return $this->checkedLicenses[$websiteId][$sku];
+        }
+        $registeredVersion = $this->config->getRegisteredVersion($sku,$websiteId);
+        $installedVersion = $this->config->getInstalledVersion($sku,$websiteId);
+        $this->checkedLicenses[$websiteId][$sku] = $registeredVersion === $installedVersion;
+        return $this->checkedLicenses[$websiteId][$sku];
+    }
 
 	/**
      * returns real sku for license key
