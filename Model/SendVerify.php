@@ -68,7 +68,7 @@ class SendVerify
             $moduleToVerify = $allModulesInWebsite[$moduleName];
             $website = $this->storeManager->getWebsite($websiteId);
             $store = $website->getDefaultStore();
-            $signature = date('Ymd');
+            $signature = gmdate('Ymd');
             $sku = strtolower(str_replace('Scommerce_', '', $moduleName));
             $version = $moduleToVerify['installed_version'];
             $host = $store->getBaseUrl();
