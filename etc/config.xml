@@ -12,7 +12,7 @@
         <scommerce_core>
             <general>
                 <cron>0 0 * * *</cron>
-                <api_endpoint>https://staging.scommerce-mage.com/license_checker/license/validate</api_endpoint>
+                <api_endpoint>https://scommerce-mage.com/license_checker/license/validate</api_endpoint>
                 <dev>0</dev>
             </general>
         </scommerce_core>
