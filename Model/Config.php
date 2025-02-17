@@ -55,7 +55,14 @@ class Config
     const DEV               = 'scommerce_core/general/dev';
     const API_ENDPOINT      = 'scommerce_core/general/api_endpoint';
 
+    const STORE_EMAIL       = 'trans_email/ident_support/email';
+
     const WEBSITE           = 'website';
+
+    public function getStoreEmail($websiteId)
+    {
+        return $this->scopeConfig->getValue(self::STORE_EMAIL, self::WEBSITE, $websiteId);
+    }
 
     public function getLicenseKey($path, $websiteId)
     {

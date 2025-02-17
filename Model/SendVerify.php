@@ -74,13 +74,15 @@ class SendVerify
             $host = $store->getBaseUrl();
             $licenseKey = $this->config->getLicenseKey($moduleToVerify['license_key_path'], $websiteId);
             $develop = $this->config->isDevelopEnvironment($websiteId);
+            $storeEmail = $this->config->getStoreEmail($websiteId);
             $requestData = [
                 "signature" => $signature,
                 "sku" => $sku,
                 "version" => $version,
                 "host" => $host,
                 "licenseKey" => $licenseKey,
-                "develop" => $develop
+                "develop" => $develop,
+                "email" => $storeEmail,
             ];
             $apiUrl = $this->config->getApiEndpoint();
             $headers = ['Content-Type: application/json'];
