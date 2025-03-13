@@ -73,7 +73,6 @@ class SendVerify
             $version = $moduleToVerify['installed_version'];
             $host = $store->getBaseUrl();
             $licenseKey = $this->config->getLicenseKey($moduleToVerify['license_key_path'], $websiteId);
-            $develop = $this->config->isDevelopEnvironment($websiteId);
             $storeEmail = $this->config->getStoreEmail($websiteId);
             $requestData = [
                 "signature" => $signature,
@@ -81,7 +80,6 @@ class SendVerify
                 "version" => $version,
                 "host" => $host,
                 "licenseKey" => $licenseKey,
-                "develop" => $develop,
                 "email" => $storeEmail,
             ];
             $apiUrl = $this->config->getApiEndpoint();
