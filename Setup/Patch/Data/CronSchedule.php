@@ -8,9 +8,9 @@ use Magento\Config\Model\ResourceModel\Config as ResourceConfig;
 
 class CronSchedule implements DataPatchInterface
 {
-    private ModuleDataSetupInterface $moduleDataSetup;
+    private $moduleDataSetup;
 
-    private ResourceConfig $resourceConfig;
+    private $resourceConfig;
 
     /**
      * @param ModuleDataSetupInterface $moduleDataSetup

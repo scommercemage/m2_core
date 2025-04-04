@@ -23,21 +23,6 @@
                    showInWebsite="1"
                    showInStore="1">
                 <label>General</label>
-                <field id="dev"
-                       translate="label comment"
-                       type="select"
-                       sortOrder="10"
-                       showInDefault="1"
-                       showInWebsite="1"
-                       showInStore="1" canRestore="1">
-                    <label>Developer Environment</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment><![CDATA[
-                    This setting will be used to make module work on development website<br>
-                    YES - If you are testing extension on your development website. If you have unusual URL, please email us at <a href="mailto:support@scommerce-mage.com">support@scommerce-mage.com</a> and we will allow it<br>
-                    NO - If you are using live website. Please note that URL should be same that you are used when placed order
-                    ]]></comment>
-                </field>
                 <field id="modules"
                        translate="label"
                        sortOrder="40"

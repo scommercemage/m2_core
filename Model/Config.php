@@ -47,12 +47,11 @@ class Config
         $this->writer = $writer;
         $this->cacheTypeList = $cacheTypeList;
         $this->resourceConnection = $resourceConnection->getConnection();
-        $this->coreConfigTable = $this->resourceConnection->getTableName('core_config_data');
+        $this->coreConfigTable = $resourceConnection->getTableName('core_config_data');
         $this->json = $json;
     }
     const MODULES           = 'scommerce_core/general/modules';
 
-    const DEV               = 'scommerce_core/general/dev';
     const API_ENDPOINT      = 'scommerce_core/general/api_endpoint';
 
     const STORE_EMAIL       = 'trans_email/ident_support/email';
@@ -96,11 +95,6 @@ class Config
         } else {
             return null;
         }
-    }
-
-    public function isDevelopEnvironment($websiteId)
-    {
-        return $this->scopeConfig->isSetFlag(self::DEV, self::WEBSITE, $websiteId);
     }
 
     public function getSkuByModuleName($moduleName)
