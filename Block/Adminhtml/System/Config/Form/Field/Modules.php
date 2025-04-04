@@ -5,7 +5,6 @@ namespace Scommerce\Core\Block\Adminhtml\System\Config\Form\Field;
 use Magento\Backend\Block\Template\Context;
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
 use Scommerce\Core\Model\InstalledModules;
 
 
@@ -19,10 +18,9 @@ class Modules extends Field
     public function __construct(
         Context $context,
         InstalledModules $installedModules,
-        array $data = [],
-        ?SecureHtmlRenderer $secureRenderer = null
+        array $data = []
     ) {
-        parent::__construct($context, $data, $secureRenderer);
+        parent::__construct($context, $data);
         $this->installedModules = $installedModules;
 
     }
@@ -32,6 +30,7 @@ class Modules extends Field
         $scommerceModules = $this->installedModules->getModuleList();
 
         $html = "<h1>Modules</h1>";
+        $html .= "<p style='font-weight: bold'>Please note: In case you are using the module(s) on your development or staging site, please use the same license key provided in your original order confirmation email.</p>";
         $html .= $this->renderStyles();
         $html .= $this->renderTable($scommerceModules);
         $html .= $this->renderScript();
@@ -78,7 +77,7 @@ class Modules extends Field
     private function renderScript()
     {
         $verifyUrl = $this->getUrl('scverify/license/verify');
-        $script = <<<SCRIPT
+        $script = "
             <script>
             require([
                 'jquery',
@@ -102,7 +101,7 @@ class Modules extends Field
                        },
                        onError: function(response) {
                            console.error(response);
-                           if (!alert("Error while sending request")) {
+                           if (!alert('Error while sending request')) {
                                     window.location.reload();
                            }
                        }
@@ -117,7 +116,7 @@ class Modules extends Field
                 });
             });
             </script>
-        SCRIPT;
+        ";
 
         return $script;
     }
@@ -133,7 +132,7 @@ class Modules extends Field
 
     private function renderStyles()
     {
-        $styles = <<<STYLES
+        $styles = "
             <style>
             .entry-edit-head.admin__collapsible-block {
                 display: none;
@@ -192,7 +191,7 @@ class Modules extends Field
                 color: red;
             }
             </style>
-            STYLES;
+            ";
 
         return $styles;
     }
