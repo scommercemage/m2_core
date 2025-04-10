@@ -85,6 +85,9 @@ class SendVerify
             $apiUrl = $this->config->getApiEndpoint();
             $headers = ['Content-Type: application/json'];
             $result = $this->request->sendRequest($apiUrl, 'POST', $requestData, $headers);
+            if (is_string($result)) {
+                throw new \Exception($result);
+            }
             if (isset($result['response']) && $result['response']['success']) {
                 $responseData['success'] = true;
                 $responseData['message'] = $result['response']['message'];
@@ -98,7 +101,15 @@ class SendVerify
             }
             $this->updateModulesData($allModulesInWebsite, $moduleName, $websiteId, $status, $result);
         } catch (\Exception $e) {
-
+            $responseData['trace'] = [
+                'apiUrl' => $apiUrl ?? '',
+                'result' => $result ?? '',
+                'request' => $requestData ?? '',
+                'module' => $moduleName,
+                'website' => $websiteId,
+                'error_message' => $e->getMessage(),
+                'error_trace' => $e->getTraceAsString()
+            ];
         }
 
         return $responseData;
