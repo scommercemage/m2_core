@@ -93,7 +93,14 @@ class Modules extends Field
                        parameters: params,
                        onSuccess: function(response) {
                            var result = response.responseJSON;
-                           if (!result.status) {
+                           if (result.trace) {
+                               console.log(result);
+                               if (result.message) {
+                                   alert(result.message);
+                               } else {
+                                   alert('Something went wrong during request to API');
+                               }
+                           } else if (!result.status) {
                                 if (!alert(result.message)) {
                                     window.location.reload();
                                 };
