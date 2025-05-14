@@ -14,6 +14,8 @@ class InstalledModules
 {
     const VENDOR = 'Scommerce_';
 
+    protected $addedModules = false;
+
     /**
      * @var RequestInterface
      */
@@ -71,6 +73,16 @@ class InstalledModules
 
     public function getModuleList($websiteId = null)
     {
+        $preparedModules = $this->getPreparedModules($websiteId);
+
+        $jsonData = $this->json->serialize($preparedModules);
+        $this->config->setModules($jsonData, $this->websiteId);
+
+        return $preparedModules;
+    }
+
+    public function getPreparedModules($websiteId)
+    {
         $scommerceModules = $this->getScommerceModules();
         if (is_null($websiteId)) {
             $defaultWebsiteId = $this->storeManager->getDefaultStoreView()->getWebsiteId();
@@ -104,24 +116,25 @@ class InstalledModules
 
     private function checkAndCompareModules($modulesFromConfig, $scommerceModules)
     {
-        $addedModules = false;
         foreach ($scommerceModules as $moduleName => $moduleConfig) {
-            $sku = $this->config->getSkuByModuleName($moduleName);
-            if (!isset($modulesFromConfig[$sku])) {
+
+            if (!isset($modulesFromConfig[$moduleName])) {
                 $version = $moduleConfig['setup_version'];
                 $licenseKeyPath = $moduleConfig['license_key_path'];
-                $modulesFromConfig[$sku] = [
-                    'name' => $moduleName,
+                $modulesFromConfig[$moduleName] = [
+                    'name' => $moduleConfig['name'],
                     'installed_version' => $version,
                     'latest_version' => "",
                     'license_key_path' => $licenseKeyPath
                 ];
-                $addedModules = true;
+                $this->addedModules = true;
             }
         }
-        if ($addedModules) {
-            $jsonData = $this->json->serialize($modulesFromConfig);
-            $this->config->setModules($jsonData, $this->websiteId);
+        foreach ($modulesFromConfig as $moduleName => $moduleConfig) {
+            if (!isset($scommerceModules[$moduleName])) {
+                unset($modulesFromConfig[$moduleName]);
+                $this->addedModules = true;
+            }
         }
 
         return $modulesFromConfig;
@@ -136,7 +149,8 @@ class InstalledModules
                 $licenseKeyPath = $this->getLicenseKeyPath($moduleName);
                 if ($licenseKeyPath) {
                     $moduleData['license_key_path'] = $licenseKeyPath;
-                    $scommerceModules[$moduleName] = $moduleData;
+                    $sku = $this->config->getSkuByModuleName($moduleName);
+                    $scommerceModules[$sku] = $moduleData;
                 }
             }
         }
