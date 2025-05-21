@@ -62,7 +62,7 @@ class Modules extends Field
             $html .= '<td class="modules-cell">' . htmlspecialchars($data['name']) . '</td>'; // Module name
             $html .= '<td class="modules-cell">' . htmlspecialchars($data['installed_version']) . '</td>'; //installed version
             $html .= '<td class="modules-cell latest-available">' . htmlspecialchars($latestAvailableVersion) . '</td>'; //available version
-            $html .= '<td class="modules-cell latest-verstion">' . htmlspecialchars($latestExtensionVersion) . '</td>'; //latest version
+            $html .= '<td class="modules-cell latest-version">' . htmlspecialchars($latestExtensionVersion) . '</td>'; //latest version
             $html .= '<td class="modules-cell status">' . htmlspecialchars($status) . '</td>'; //status
             $html .= '<td class="modules-cell modules-cell-last">' . $verifyButton . '</td>'; //verify
             $html .= '</tr>';
@@ -107,7 +107,7 @@ class Modules extends Field
                                     row.find('.latest-available').text(result.latest_available_version);
                                 }
                                 if (result.latest_extension_version) {
-                                    row.find('.latest-verstion').text(result.latest_extension_version);
+                                    row.find('.latest-version').text(result.latest_extension_version);
                                 }
                                 if (result.message) {
                                     row.find('.status').text(result.message);
