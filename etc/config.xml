@@ -4,7 +4,7 @@
         <scommerce_core>
             <general>
                 <cron>0 0 * * *</cron>
-                <api_endpoint>https://scommerce-mage.com/license_checker/license/validate</api_endpoint>
+                <api_endpoint>https://www.scommerce-mage.com/license_checker/license/validate</api_endpoint>
             </general>
         </scommerce_core>
     </default>
