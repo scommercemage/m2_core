@@ -89,8 +89,7 @@ class SendVerify
                 throw new \Exception($result);
             }
             if (isset($result['response']) && $result['response']['success']) {
-                $responseData['success'] = true;
-                $responseData['message'] = $result['response']['message'];
+                $responseData = $result['response'];
                 $this->licenseUpdater->createOrUpdateLicense($websiteId, $moduleName, $version);
                 $status = $result['response']['message'];
             } else {

@@ -58,12 +58,12 @@ class Modules extends Field
             $latestExtensionVersion = isset($data['latest_extension_version']) > 0 ? $data['latest_extension_version'] : 'No Information Available Now';
             $status = isset($data['status']) ? $data['status'] : 'Status';
             $verifyButton = $this->getVerifyButton($name);
-            $html .= '<tr class="modules-row">';
+            $html .= '<tr class="modules-row" id="' . $name . '">';
             $html .= '<td class="modules-cell">' . htmlspecialchars($data['name']) . '</td>'; // Module name
             $html .= '<td class="modules-cell">' . htmlspecialchars($data['installed_version']) . '</td>'; //installed version
-            $html .= '<td class="modules-cell">' . htmlspecialchars($latestAvailableVersion) . '</td>'; //available version
-            $html .= '<td class="modules-cell">' . htmlspecialchars($latestExtensionVersion) . '</td>'; //latest version
-            $html .= '<td class="modules-cell">' . htmlspecialchars($status) . '</td>'; //status
+            $html .= '<td class="modules-cell latest-available">' . htmlspecialchars($latestAvailableVersion) . '</td>'; //available version
+            $html .= '<td class="modules-cell latest-version">' . htmlspecialchars($latestExtensionVersion) . '</td>'; //latest version
+            $html .= '<td class="modules-cell status">' . htmlspecialchars($status) . '</td>'; //status
             $html .= '<td class="modules-cell modules-cell-last">' . $verifyButton . '</td>'; //verify
             $html .= '</tr>';
         }
@@ -81,7 +81,8 @@ class Modules extends Field
             <script>
             require([
                 'jquery',
-                'prototype'
+                'prototype',
+                'loader'
             ], function($) {
                 var verifyUrl = '{$verifyUrl}' + '?isAjax=true';
 
@@ -101,21 +102,31 @@ class Modules extends Field
                                    alert('Something went wrong during request to API');
                                }
                            } else if (!result.status) {
-                                if (!alert(result.message)) {
-                                    window.location.reload();
-                                };
+                                var row = $('#' + params.moduleName);
+                                if (result.latest_available_version) {
+                                    row.find('.latest-available').text(result.latest_available_version);
+                                }
+                                if (result.latest_extension_version) {
+                                    row.find('.latest-version').text(result.latest_extension_version);
+                                }
+                                if (result.message) {
+                                    row.find('.status').text(result.message);
+                                }
+                                alert(result.message);
                            }
+
+                           $('#modules_table').trigger('processStop');
                        },
                        onError: function(response) {
+                           $('#modules_table').trigger('processStop');
                            console.error(response);
-                           if (!alert('Error while sending request')) {
-                                    window.location.reload();
-                           }
+                           alert('Error while sending request');
                        }
                     });
                 }
 
                 $('.verify').click(function(event) {
+                    $('#modules_table').trigger('processStart');
                     event.preventDefault();
                     websiteId = $(this).data('website-id');
                     moduleName = $(this).data('module-name');
