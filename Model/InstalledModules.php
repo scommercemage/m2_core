@@ -127,13 +127,13 @@ class InstalledModules
                     'latest_version' => "",
                     'license_key_path' => $licenseKeyPath
                 ];
-                $this->addedModules = true;
+            } else {
+                $modulesFromConfig[$moduleName]['installed_version'] = $moduleConfig['setup_version'];
             }
         }
         foreach ($modulesFromConfig as $moduleName => $moduleConfig) {
             if (!isset($scommerceModules[$moduleName])) {
                 unset($modulesFromConfig[$moduleName]);
-                $this->addedModules = true;
             }
         }
 
