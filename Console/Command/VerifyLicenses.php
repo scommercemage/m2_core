@@ -40,10 +40,10 @@ class VerifyLicenses extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|null
+     * @return int
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->state->emulateAreaCode(
             Area::AREA_CRONTAB,
