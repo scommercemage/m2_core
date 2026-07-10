@@ -1,5 +1,4 @@
 <?php
-
 namespace Scommerce\Core\Console\Command;
 
 use Magento\Framework\App\Area;
@@ -22,6 +21,12 @@ class VerifyLicenses extends Command
      */
     private $verifyLicenses;
 
+    /**
+     * Constructor
+     *
+     * @param State $state
+     * @param VerifyLicensesProcess $verifyLicenses
+     */
     public function __construct(
         State $state,
         VerifyLicensesProcess $verifyLicenses
@@ -31,6 +36,11 @@ class VerifyLicenses extends Command
         parent::__construct();
     }
 
+    /**
+     * Configure the command properties
+     *
+     * @return void
+     */
     protected function configure()
     {
         $this->setName('scommerce:licenses:verify')->setDescription('Verify All Licenses');
@@ -38,12 +48,14 @@ class VerifyLicenses extends Command
     }
 
     /**
+     * Execute the console command
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|null
+     * @return int
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->state->emulateAreaCode(
             Area::AREA_CRONTAB,
@@ -54,12 +66,14 @@ class VerifyLicenses extends Command
     }
 
     /**
+     * Callback handler for emulation execution
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function executeCallBack(InputInterface $input, OutputInterface $output)
+    public function executeCallBack(InputInterface $input, OutputInterface $output): int
     {
         $this->verifyLicenses->execute();
         return Cli::RETURN_SUCCESS;
