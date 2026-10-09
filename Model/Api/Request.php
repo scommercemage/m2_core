@@ -48,13 +48,10 @@ class Request
 
         if (curl_errno($curl)) {
             $error_msg = curl_error($curl);
-            curl_close($curl);
             return 'CURL Error: ' . $error_msg;
         }
 
         $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-
-        curl_close($curl);
 
         return ['response' => json_decode($response, true), 'http_code' => $httpCode];
     }
