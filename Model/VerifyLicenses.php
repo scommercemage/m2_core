@@ -54,19 +54,44 @@ class VerifyLicenses
 
         foreach ($websites as $website) {
             $websiteId = $website->getId();
-            $websiteModules = $this->json->unserialize($this->config->getModules($websiteId));
-            if (count($websiteModules) == 0) {
+
+            // Fix: Prevent passing null to unserialize
+            $modulesRaw = $this->config->getModules($websiteId);
+            $websiteModules = [];
+
+            if (!empty($modulesRaw)) {
+                try {
+                    $websiteModules = $this->json->unserialize((string)$modulesRaw);
+                } catch (\InvalidArgumentException $e) {
+                    $websiteModules = [];
+                }
+            }
+
+            // Fix: Prevent calling count() on a non-countable variable
+            if (!is_array($websiteModules) || count($websiteModules) == 0) {
                 $websiteModules = $this->installedModules->getModuleList($websiteId);
             }
+
+            if (!is_array($websiteModules)) {
+                $websiteModules = [];
+            }
+
             foreach ($websiteModules as $moduleName => $moduleData) {
                 if ($isCron) {
                     $lastVerifyDatePath = $this->config->getLastVerifyDatePath($moduleName);
                     $lastVerifyDate = $this->config->getValueByPath($lastVerifyDatePath, $websiteId);
-                    if ($lastVerifyDate) {
-                        $lastVerifyDateObject = \DateTime::createFromFormat('Ymd', $lastVerifyDate);
+
+                    // Fix: Prevent passing null/false to DateTime and ensure methods don't fatal
+                    if (!empty($lastVerifyDate)) {
+                        $lastVerifyDateObject = \DateTime::createFromFormat('Ymd', (string)$lastVerifyDate);
                         $todayDateObject = \DateTime::createFromFormat('Ymd', date('Ymd'));
-                        $diff = $lastVerifyDateObject->diff($todayDateObject);
-                        if ($diff->days > 7) {
+
+                        if ($lastVerifyDateObject && $todayDateObject) {
+                            $diff = $lastVerifyDateObject->diff($todayDateObject);
+                            if ($diff->days > 7) {
+                                $this->sendVerify->sendVerify($moduleName, $websiteId);
+                            }
+                        } else {
                             $this->sendVerify->sendVerify($moduleName, $websiteId);
                         }
                     } else {
