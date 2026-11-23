@@ -42,5 +42,7 @@ class CronSchedule implements DataPatchInterface
         $cronSchedule = "$min $hour * * *";
         $this->resourceConfig->saveConfig('scommerce_core/general/cron', $cronSchedule);
         $this->moduleDataSetup->endSetup();
+
+        return $this;
     }
 }
