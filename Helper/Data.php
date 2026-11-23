@@ -101,7 +101,7 @@ class Data extends AbstractHelper
 		}
 		unset($bit);
 		unset($bits);
-		unset($website);
+		$website = '';
 
 		if (strlen($part[1])>3){
 			unset($part[0]);
